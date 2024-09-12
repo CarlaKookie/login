@@ -1,0 +1,53 @@
+// For information on how to create your own theme, please see:
+// http://ionicframework.com/docs/theming/
+:root {
+	--ion-color-fulldark: #000000;
+	--ion-color-fulldark-rgb: 0,0,0;
+	--ion-color-fulldark-contrast: #ffffff;
+	--ion-color-fulldark-contrast-rgb: 255,255,255;
+	--ion-color-fulldark-shade: #000000;
+	--ion-color-fulldark-tint: #1a1a1a;
+
+	--ion-color-success: #228822;
+	--ion-color-success-rgb: 34,136,34;
+	--ion-color-success-contrast: #000000;
+	--ion-color-success-contrast-rgb: 0,0,0;
+	--ion-color-success-shade: #1e781e;
+	--ion-color-success-tint: #389438;
+
+
+	--ion-color-white: #ffffff;
+	--ion-color-white-rgb: 255,255,255;
+	--ion-color-white-contrast: #000000;
+	--ion-color-white-contrast-rgb: 0,0,0;
+	--ion-color-white-shade: #e0e0e0;
+	--ion-color-white-tint: #ffffff;
+
+}
+
+.ion-color-fulldark {
+	--ion-color-base: var(--ion-color-fulldark);
+	--ion-color-base-rgb: var(--ion-color-fulldark-rgb);
+	--ion-color-contrast: var(--ion-color-fulldark-contrast);
+	--ion-color-contrast-rgb: var(--ion-color-fulldark-contrast-rgb);
+	--ion-color-shade: var(--ion-color-fulldark-shade);
+	--ion-color-tint: var(--ion-color-fulldark-tint);
+}
+
+.ion-color-white {
+	--ion-color-base: var(--ion-color-white);
+	--ion-color-base-rgb: var(--ion-color-white-rgb);
+	--ion-color-contrast: var(--ion-color-white-contrast);
+	--ion-color-contrast-rgb: var(--ion-color-white-contrast-rgb);
+	--ion-color-shade: var(--ion-color-white-shade);
+	--ion-color-tint: var(--ion-color-white-tint);
+}
+
+.ion-color-success {
+	--ion-color-base: var(--ion-color-success);
+	--ion-color-base-rgb: var(--ion-color-success-rgb);
+	--ion-color-contrast: var(--ion-color-success-contrast);
+	--ion-color-contrast-rgb: var(--ion-color-success-contrast-rgb);
+	--ion-color-shade: var(--ion-color-success-shade);
+	--ion-color-tint: var(--ion-color-success-tint);
+}
