@@ -25,13 +25,14 @@ export class HomePage {
         message: 'Por favor, ingrese su nombre de usuario y/o contraseña, no sea imbécil.',
         buttons: ['OK'],
       });
-
       await alert.present();
     } else {
-      this.router.navigate(['/inicio', { nombre: this.nombreUsuario }]);
+  
+      this.router.navigate(['/inicio'], {
+        state: { nombre_usuario: this.nombreUsuario } 
+      });
     }
   }
-
   navigateToRestauracion() {
     this.router.navigate(['/restauracion']);
   }
