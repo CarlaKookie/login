@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -8,16 +9,27 @@ import { Router } from '@angular/router';
 })
 export class HomePage {
   nombreUsuario: string = '';
+  contrasena: string = '';
   recuerdame: boolean = true;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private alertController: AlertController) {}
 
   changeStatus(value: boolean) {
     this.recuerdame = value;
   }
 
-  navigateToInicio() {
-    this.router.navigate(['/inicio', { nombre: this.nombreUsuario }]);
+  async navigateToInicio() {
+    if (!this.nombreUsuario || !this.contrasena) {
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Por favor, ingrese su nombre de usuario y/o contraseña, no sea imbécil.',
+        buttons: ['OK'],
+      });
+
+      await alert.present();
+    } else {
+      this.router.navigate(['/inicio', { nombre: this.nombreUsuario }]);
+    }
   }
 
   navigateToRestauracion() {

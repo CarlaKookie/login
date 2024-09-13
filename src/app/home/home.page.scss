@@ -6,16 +6,15 @@ ion-content {
   height: 33vh; 
   background-color: rgb(1, 16, 156);
   display: flex;
-  align-items: center; 
+  justify-content: center; 
+  align-items: center;
 }
 
 .logo-container {
   display: flex;
-  margin-left: 2rem;
-  justify-content: flex-start; 
+  justify-content: center; 
   align-items: center; 
-  width: 100%;
-  padding-left: 1rem; 
+  width: 100%; 
 }
 
 ion-list {
@@ -47,7 +46,6 @@ ion-list {
 }
 
 ion-img {
-  width: 350px; 
+  max-width: 100%; 
   height: auto;
 }
-

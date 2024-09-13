@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio',
@@ -9,11 +9,15 @@ import { ActivatedRoute } from '@angular/router';
 export class InicioPage implements OnInit {
   nombreUsuario: string = '';
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.nombreUsuario = params.get('nombre') || '';
     });
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/home']);
   }
 }

@@ -17,3 +17,11 @@
   background: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
 }
+
+.custom-button {
+    width: 150px; 
+    position: absolute;
+    bottom: 16px; 
+    left: 50%;
+    transform: translateX(-50%);
+  }
