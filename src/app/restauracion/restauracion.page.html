@@ -7,7 +7,7 @@
     </ion-card-header>
     <ion-card-content>
       <form (ngSubmit)="onSubmit()">
-        <ion-item>
+        <ion-item >
           <ion-label position="floating">Nombre de Usuario</ion-label>
           <ion-input type="text" [(ngModel)]="nombreUsuario" name="nombreUsuario" required></ion-input>
         </ion-item>
@@ -16,6 +16,7 @@
       </form>
     </ion-card-content>
   </ion-card>
+  <ion-button class="custom-button"  color="danger" expand="block" (click)="cancelar()" >Cancelar</ion-button>
 </ion-content>
 
 <ion-footer>

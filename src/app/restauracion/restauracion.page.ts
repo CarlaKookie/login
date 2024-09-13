@@ -36,4 +36,8 @@ export class RestauracionPage implements OnInit {
       await alert.present();
     }
   }
+
+  cancelar() {
+    this.router.navigate(['/home']);
+  }
 }
