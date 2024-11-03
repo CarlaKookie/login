@@ -23,7 +23,7 @@ export class HomePage {
     if (!this.nombreUsuario || !this.contrasena) {
       const alert = await this.alertController.create({
         header: 'Error',
-        message: 'Por favor, ingrese su nombre de usuario y/o contraseña, no sea imbécil.',
+        message: 'Por favor, ingrese su nombre de usuario y/o contraseña.',
         buttons: ['OK'],
       });
       await alert.present();
