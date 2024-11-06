@@ -15,6 +15,12 @@ export class HomePage {
 
   constructor(private router: Router, private alertController: AlertController, private authService: AuthService) {}
 
+  ionViewWillEnter() {
+    this.nombreUsuario = '';
+    this.contrasena = '';
+  }
+
+
   changeStatus(value: boolean) {
     this.recuerdame = value;
   }

@@ -26,7 +26,7 @@ export class InicioPage implements OnInit, CanComponentDeactivate {
     logout() {
       if (this.canDeactivate()) {
       this.authService.logout(); // Cerrar sesión
-      this.router.navigate(['/home']);
+      this.router.navigate(['/home'])
       console.log("Sesion cerrada")
       }
     }
