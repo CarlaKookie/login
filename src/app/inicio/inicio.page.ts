@@ -15,22 +15,29 @@ export class InicioPage implements OnInit {
 
   async ngOnInit() {
     await this.storage.create();  // Inicializamos el storage
-    // Intentamos obtener el nombre de usuario del storage
     const storedName = await this.storage.get('nombre');
-    this.nombreUsuario = storedName || 'Usuario';  // Si no está en el storage, usamos un valor por defecto
-    console.log('Nombre recuperado desde el storage:', this.nombreUsuario);  // Verificar el nombre recuperado
+    this.nombreUsuario = storedName || 'Usuario';
+    console.log('Nombre recuperado desde el storage:', this.nombreUsuario);
   }
 
-  canDeactivate(): boolean {
-    return confirm('¿Estás seguro que deseas cerrar sesión?');
-  }
-
-  logout() {
-    if (this.canDeactivate()) {
+  async logout() {
+    const confirmLogout = await this.canDeactivate();
+    if (confirmLogout) {
       this.authService.logout(); // Cerrar sesión
-      this.storage.remove('nombre');  // Eliminar nombre del storage
+      await this.storage.remove('nombre');  // Eliminar nombre del storage
       this.router.navigate(['/home']);
       console.log("Sesión cerrada");
     }
+  }
+
+  async canDeactivate(): Promise<boolean> {
+    return new Promise((resolve) => {
+      const confirmLogout = confirm('¿Estás seguro que deseas cerrar sesión?');
+      resolve(confirmLogout);
+    });
+  }
+
+  goToNotas() {
+    this.router.navigate(['/notas']);
   }
 }

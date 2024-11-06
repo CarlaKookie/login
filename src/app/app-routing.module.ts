@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { canActivate } from './canactivate.guard';
 import { CanmatchGuard } from './canmatch.guard';
-import { CanDeactivateGuard } from './candeactivate.guard';
 
 const routes: Routes = [
   {
@@ -18,20 +17,19 @@ const routes: Routes = [
     path: 'inicio',
     loadChildren: () => import('./inicio/inicio.module').then(m => m.InicioPageModule),
     canActivate: [canActivate],
-    canMatch: [CanmatchGuard],
-    canDeactivate: [CanDeactivateGuard]
+    canMatch: [CanmatchGuard]
   },
   {
     path: 'restauracion',
     loadChildren: () => import('./restauracion/restauracion.module').then(m => m.RestauracionPageModule)
   },
   {
-    path: '**',
-    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundPageModule)
+    path: 'notas',
+    loadChildren: () => import('./notas/notas.module').then(m => m.NotasPageModule)
   },
   {
-    path: 'notas',
-    loadChildren: () => import('./notas/notas.module').then( m => m.NotasPageModule)
+    path: '**',
+    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundPageModule)
   }
 ];
 
@@ -42,3 +40,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+

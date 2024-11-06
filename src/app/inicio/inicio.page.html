@@ -5,6 +5,12 @@
     <div class="welcome-message">
       <p>Bienvenido/a {{ nombreUsuario }}!</p>
     </div>
+
+    <div class="notas-section">
+      <ion-button class="custom-button" color="secondary" expand="block" (click)="goToNotas()">Ver Notas</ion-button>
+    </div>
+
     <ion-button class="custom-button" color="danger" expand="block" (click)="logout()">Cerrar sesión</ion-button>
   </div>
 </ion-content>
+
