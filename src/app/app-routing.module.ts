@@ -16,21 +16,19 @@ const routes: Routes = [
   },
   {
     path: 'inicio',
-    loadChildren: () => import('./inicio/inicio.module').then(m => m.InicioPageModule)
+    loadChildren: () => import('./inicio/inicio.module').then(m => m.InicioPageModule),
+    canActivate: [canActivate],
+    canMatch: [CanmatchGuard],
+    canDeactivate: [CanDeactivateGuard]
   },
   {
     path: 'restauracion',
     loadChildren: () => import('./restauracion/restauracion.module').then(m => m.RestauracionPageModule)
   },
-
   {
-  path: 'inicio',
-  loadChildren: () => import('./inicio/inicio.module').then( m => m.InicioPageModule),
-  canActivate: [canActivate],
-  canMatch: [CanmatchGuard],
-  canDeactivate: [CanDeactivateGuard]
+    path: '**',
+    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundPageModule)
   }
-
 ];
 
 @NgModule({
