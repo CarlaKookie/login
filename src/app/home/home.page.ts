@@ -30,7 +30,6 @@ export class HomePage {
     } else {
   
       if (this.authService.login(this.nombreUsuario, this.contrasena)) {
-        //aprovechamos de usar state para llevar la informacion al dashboard.
         this.router.navigate(['/inicio'], { state: { username: this.nombreUsuario } });
         } else {
         alert('Nombre de usuario o contraseña incorrectos');
