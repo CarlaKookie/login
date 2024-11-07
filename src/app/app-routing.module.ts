@@ -28,7 +28,10 @@ const routes: Routes = [
   },
   {
     path: 'notas',
-    loadChildren: () => import('./notas/notas.module').then(m => m.NotasPageModule)
+    loadChildren: () => import('./notas/notas.module').then(m => m.NotasPageModule),
+    canActivate: [canActivate],
+    canMatch: [CanmatchGuard],
+    canDeactivate: [CanDeactivateGuard]
   },
   {
     path: '**',
