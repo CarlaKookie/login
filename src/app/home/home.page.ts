@@ -14,7 +14,12 @@ export class HomePage {
   contrasena: string = '';
   recuerdame: boolean = true;
 
-  constructor(private router: Router, private alertController: AlertController, private authService: AuthService, private storage: Storage) {
+  constructor(
+    private router: Router,
+    private alertController: AlertController,
+    private authService: AuthService,
+    private storage: Storage
+  ) {
     this.initStorage();
   }
 
@@ -26,11 +31,14 @@ export class HomePage {
     await this.storage.create(); // Inicializamos el storage antes de usarlo
   }
 
-
   ionViewWillEnter() {
     // Limpiar los campos de entrada cada vez que se accede a la página
     this.nombreUsuario = '';
     this.contrasena = '';
+
+    if (!this.authService.isLoggedIn()) {
+      this.storage.remove('nombre'); //  el nombre se elimina del storage al cerrar sesión
+    }
   }
 
   async navigateToInicio() {
@@ -45,10 +53,15 @@ export class HomePage {
       if (this.authService.login(this.nombreUsuario, this.contrasena)) {
         // guardamos el nombre de usuario en el storage
         await this.storage.set('nombre', this.nombreUsuario);
-        console.log('Nombre guardado:', this.nombreUsuario);  // Ver nombre
+        console.log('Nombre guardado:', this.nombreUsuario); // Ver nombre
         this.router.navigate(['/inicio']);
       } else {
-        alert('Nombre de usuario o contraseña incorrectos');
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'Nombre de usuario o contraseña incorrectos',
+          buttons: ['OK'],
+        });
+        await alert.present();
       }
     }
   }
