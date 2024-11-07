@@ -13,6 +13,10 @@ export class RestauracionPage implements OnInit {
 
   ngOnInit() {}
 
+  ionViewWillEnter() {
+    // Limpiar los campos de entrada cada vez que se accede a la página
+    this.nombreUsuario = '';}  
+
   async onSubmit() {
     if (this.nombreUsuario) {
       
