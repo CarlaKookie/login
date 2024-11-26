@@ -4,11 +4,32 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-button (click)="generateQRCode()">Generar Código QR</ion-button>
+<ion-content class="ion-padding">
+  <div class="background-container">
+    <h2>Bienvenido, {{ nombreUsuario }}</h2>
+    <p>Correo: {{ correoUsuario }}</p>
 
-  <!-- Mostrar el QR generado -->
-  <div *ngIf="qrCodeData">
-    <img [src]="qrCodeData" alt="Código QR" />
+    <ion-item>
+      <ion-label>Sección</ion-label>
+      <ion-select [(ngModel)]="selectedSection">
+        <ion-select-option *ngFor="let section of sections" [value]="section">{{ section }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Asignatura</ion-label>
+      <ion-select [(ngModel)]="selectedSubject">
+        <ion-select-option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="full" color="primary" (click)="generateQRCode()">Generar Código QR</ion-button>
+
+    <!-- Mostrar el QR generado -->
+    <div *ngIf="qrCodeData" class="qr-container">
+      <img [src]="qrCodeData" alt="Código QR" />
+    </div>
+
+    <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
   </div>
 </ion-content>

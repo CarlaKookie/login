@@ -1,5 +1,60 @@
+background-container {
+  background-color: #000000; /* Fondo negro */
+  min-height: 100%; /* Aseguramos que el fondo cubra toda la altura de la página */
+  color: #fff; /* Texto blanco */
+  padding: 20px; /* Un poco de espacio dentro del contenedor */
+}
+
+h2 {
+  text-align: center;
+  color: #fff; /* Texto blanco */
+}
+
+p {
+  text-align: center;
+  color: #ccc; /* Texto gris claro */
+}
+
+.qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
 img {
-    max-width: 100%;
-    margin-top: 20px;
+  max-width: 100%;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ion-item ion-select {
+  --color: #fff; /* Color del texto blanco */
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  ion-item {
+    font-size: 14px;
   }
-  
+
+  ion-label {
+    font-size: 12px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  ion-button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .qr-container {
+    margin-top: 10px;
+  }
+}

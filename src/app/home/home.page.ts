@@ -37,7 +37,8 @@ export class HomePage {
     this.contrasena = '';
 
     if (!this.authService.isLoggedIn()) {
-      this.storage.remove('nombre'); //  el nombre se elimina del storage al cerrar sesión
+      this.storage.remove('nombre'); // Eliminar nombre del storage al cerrar sesión
+      this.storage.remove('correo'); // Eliminar correo del storage al cerrar sesión
     }
   }
 
@@ -50,11 +51,19 @@ export class HomePage {
       });
       await alert.present();
     } else {
-      if (this.authService.login(this.nombreUsuario, this.contrasena)) {
-        // guardamos el nombre de usuario en el storage
-        await this.storage.set('nombre', this.nombreUsuario);
-        console.log('Nombre guardado:', this.nombreUsuario); // Ver nombre
-        this.router.navigate(['/inicio']);
+      const user = this.authService.login(this.nombreUsuario, this.contrasena);
+      if (user) {
+        // Guardar el nombre de usuario y correo en el storage
+        await this.storage.set('nombre', user.nombre);
+        await this.storage.set('correo', user.correo);
+        console.log('Nombre guardado:', user.nombre); // Ver nombre
+
+        // Redirigir según el tipo de usuario
+        if (user.tipo === 'profesor') {
+          this.router.navigate(['/profesor']);
+        } else {
+          this.router.navigate(['/inicio']);
+        }
       } else {
         const alert = await this.alertController.create({
           header: 'Error',
