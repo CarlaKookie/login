@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
 import { AuthService } from '../auth.service';
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner'; // Importa BarcodeScanner
 
 @Component({
   selector: 'app-inicio',
@@ -48,5 +49,26 @@ export class InicioPage implements OnInit {
       state: { fromEdit: true },
     };
     this.router.navigate(['/notas'], navigationExtras);
+  }
+
+  async startScan() {
+    // Verifica si se tiene permiso para usar la cámara
+    const allowed = await BarcodeScanner.checkPermission({ force: true });
+    if (allowed.granted) {
+      // Oculta la interfaz de usuario web para que la cámara pueda escanear
+      document.querySelector('body')?.classList.add('scanner-active');
+
+      // Inicia el escaneo
+      const result = await BarcodeScanner.startScan(); // La promesa se resuelve cuando se detecta un código
+      document.querySelector('body')?.classList.remove('scanner-active');
+
+      // Verifica si se obtuvo algún contenido del escaneo
+      if (result.hasContent) {
+        console.log('Scanned content:', result.content); // Muestra el contenido escaneado en la consola
+        // Aquí puedes manejar el contenido escaneado como necesites
+      }
+    } else {
+      console.error('Permission denied');
+    }
   }
 }

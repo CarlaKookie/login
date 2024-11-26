@@ -48,7 +48,6 @@
 .custom-button {
   width: 200px; 
   margin-bottom: 15px; 
-  background-color: #ff3b30; 
   color: white !important;
   font-size: 1.2rem;
   font-weight: bold;
@@ -59,7 +58,6 @@
 }
 
 .custom-button:hover {
-  background-color: #ff7b5b;
   transform: scale(1.1);
 }
 
@@ -71,4 +69,9 @@
     transform: translateY(-10px);
   }
 }
+
+body.scanner-active {
+  background: transparent !important;
+}
+
 
