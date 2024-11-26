@@ -36,7 +36,10 @@ const routes: Routes = [
   
   {
     path: 'profesor',
-    loadChildren: () => import('./profesor/profesor.module').then( m => m.ProfesorPageModule)
+    loadChildren: () => import('./profesor/profesor.module').then( m => m.ProfesorPageModule),
+    canActivate: [canActivate],
+    canMatch: [CanmatchGuard],
+    canDeactivate: [CanDeactivateGuard]
   },
   {
     path: '**',
