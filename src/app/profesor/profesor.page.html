@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Generador de QR - Profesor</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-button (click)="generateQRCode()">Generar Código QR</ion-button>
+
+  <!-- Mostrar el QR generado -->
+  <div *ngIf="qrCodeData">
+    <img [src]="qrCodeData" alt="Código QR" />
+  </div>
+</ion-content>

@@ -33,6 +33,11 @@ const routes: Routes = [
     canMatch: [CanmatchGuard],
     canDeactivate: [CanDeactivateGuard]
   },
+  
+  {
+    path: 'profesor',
+    loadChildren: () => import('./profesor/profesor.module').then( m => m.ProfesorPageModule)
+  },
   {
     path: '**',
     loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundPageModule)
