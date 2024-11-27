@@ -35,6 +35,16 @@ ion-item ion-select {
   --color: #fff; /* Color del texto blanco */
 }
 
+/* Ajustes específicos para ion-datetime */
+ion-item ion-datetime {
+  --padding-start: 0;
+  --padding-end: 0;
+  --min-width: 200px; /* Ancho mínimo para el campo */
+  --font-size: 14px; /* Tamaño de la fuente */
+  --border-radius: 5px; /* Bordes redondeados */
+  --background: transparent; /* Fondo transparente para una apariencia más limpia */
+}
+
 /* Responsividad para pantallas pequeñas */
 @media (max-width: 768px) {
   ion-item {
@@ -56,5 +66,11 @@ ion-item ion-select {
 
   .qr-container {
     margin-top: 10px;
+  }
+
+  /* Ajustes específicos para el selector de fecha en pantallas pequeñas */
+  ion-item ion-datetime {
+    --font-size: 12px;
+    --min-width: 150px;
   }
 }

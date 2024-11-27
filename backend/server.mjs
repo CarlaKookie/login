@@ -23,14 +23,39 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
 app.get('/api/get-attendance', async (req, res) => {
   const { date, section } = req.query;
 
+  // Verificar que se reciban los parámetros necesarios
   if (!date || !section) {
     return res.status(400).json({ error: 'Faltan parámetros requeridos: date o section' });
   }
 
   try {
-    const query = { date: new Date(date), section };
+    // Convertir la fecha recibida en una instancia de Date (sin hora)
+    const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);  // Establecer la hora en 00:00:00 para el inicio del día
+
+    const endDate = new Date(date);
+    endDate.setHours(23, 59, 59, 999);  // Establecer la hora en 23:59:59 para el fin del día
+
+    // Log para verificar las fechas calculadas
+    console.log('Fecha de inicio:', startDate);
+    console.log('Fecha de fin:', endDate);
+    
+    // Realizar la búsqueda en la base de datos con el rango de fechas
+    const query = { 
+      date: { $gte: startDate, $lte: endDate },  // Rango de fechas
+      section  // Filtrar por sección también
+    };
+
+    console.log('Consulta realizada:', query);  // Verificar la consulta
+
     const attendanceRecords = await Attendance.find(query, '-_id user status date section subject sessionId');
-    res.json(attendanceRecords);
+
+    // Si no hay registros, devolver un mensaje adecuado
+    if (attendanceRecords.length === 0) {
+      console.log('No se encontraron registros de asistencia para los parámetros proporcionados.');
+    }
+
+    res.json(attendanceRecords);  // Devolver los resultados de la consulta
   } catch (err) {
     console.error('Error al consultar la base de datos', err);
     res.status(500).json({ error: 'Error al consultar la base de datos' });

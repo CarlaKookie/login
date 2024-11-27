@@ -3,7 +3,7 @@ import * as QRCode from 'qrcode';
 import { Storage } from '@ionic/storage-angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { ApiService } from '../services/api.service'; // Importar el ApiService
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-profesor',
@@ -14,8 +14,10 @@ export class ProfesorPage implements OnInit {
   qrCodeData: string = '';
   selectedSection: string = '';
   selectedSubject: string = '';
+  selectedDate: string = ''; // Campo para la fecha seleccionada
   nombreUsuario: string = '';
   correoUsuario: string = '';
+  attendanceRecords: any[] = [];
 
   sections: string[] = ['004D', '006D', '007D'];
   subjects: string[] = ['Programación de base de datos', 'Programación de aplicaciones móviles'];
@@ -24,21 +26,23 @@ export class ProfesorPage implements OnInit {
     private storage: Storage,
     private router: Router,
     private authService: AuthService,
-    private apiService: ApiService // Inyectar el ApiService
+    private apiService: ApiService
   ) {}
 
-  async ngOnInit() {
-    await this.storage.create();
-    const storedName = await this.storage.get('nombre');
-    const storedEmail = await this.storage.get('correo');
-    this.nombreUsuario = storedName || 'Usuario';
-    this.correoUsuario = storedEmail || 'Correo';
+  // No es necesario 'ngOnInit' para cargar los datos, lo haremos en 'ionViewWillEnter'
+  ngOnInit() {
+    // En ngOnInit no es necesario hacer nada relacionado con el storage
   }
 
-  // Añadir ionViewWillEnter para limpiar los campos cuando se ingresa a la página
-  ionViewWillEnter() {
-    this.nombreUsuario = '';
-    this.correoUsuario = '';
+  // Cambia la carga de datos al ciclo de vida 'ionViewWillEnter'
+  async ionViewWillEnter() {
+    // Cargar los datos del almacenamiento (nombre y correo)
+    const storedName = await this.storage.get('nombre');
+    const storedEmail = await this.storage.get('correo');
+    this.nombreUsuario = storedName || 'Usuario'; // Valor por defecto si no se encuentra
+    this.correoUsuario = storedEmail || 'Correo'; // Valor por defecto si no se encuentra
+
+    // Limpiar campos relacionados con la sección y asignatura
     this.selectedSection = '';
     this.selectedSubject = '';
     this.qrCodeData = ''; // Limpiar el código QR
@@ -64,27 +68,47 @@ export class ProfesorPage implements OnInit {
     return true;
   }
 
-  // Aquí generamos el QR con el id de la fecha y hora
   generateQRCode() {
-    // Crear un id basado en la fecha y hora actual
     const dateTime = new Date();
-    const timestamp = dateTime.getTime(); // Obtiene el timestamp de la fecha actual
+    const timestamp = dateTime.getTime();
 
     const data = {
-      id: timestamp.toString(), // El id único basado en la fecha y hora
+      id: timestamp.toString(),
       sessionId: this.selectedSection,
       subject: this.selectedSubject,
       profesor: this.nombreUsuario
     };
 
-    // Generar el código QR localmente
     QRCode.toDataURL(JSON.stringify(data), (err, url) => {
       if (err) {
         console.error('Error generando el código QR', err);
       } else {
-        this.qrCodeData = url; // Asignamos la URL generada
+        this.qrCodeData = url;
         console.log(this.qrCodeData);
       }
     });
+  }
+
+  consultAttendance() {
+    if (!this.selectedDate || !this.selectedSection) {
+      alert('Debe proporcionar una fecha y sección válidas.');
+      return;
+    }
+
+    // Convertir la fecha seleccionada a formato ISO con zona horaria
+    const isoDate = new Date(this.selectedDate).toISOString();
+
+    console.log('Consultando asistencia para:', isoDate, this.selectedSection); // Verificación de los datos
+
+    this.apiService.getAttendance(isoDate, this.selectedSection).subscribe(
+      (data) => {
+        this.attendanceRecords = data;
+        console.log('Asistencia:', data);
+      },
+      (error) => {
+        console.error('Error al consultar la asistencia:', error);
+        alert('Hubo un error al consultar los datos.');
+      }
+    );
   }
 }
