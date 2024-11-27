@@ -3,6 +3,7 @@ import * as QRCode from 'qrcode';
 import { Storage } from '@ionic/storage-angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { ApiService } from '../services/api.service'; // Importar el ApiService
 
 @Component({
   selector: 'app-profesor',
@@ -22,7 +23,8 @@ export class ProfesorPage implements OnInit {
   constructor(
     private storage: Storage,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private apiService: ApiService // Inyectar el ApiService
   ) {}
 
   async ngOnInit() {
@@ -62,15 +64,27 @@ export class ProfesorPage implements OnInit {
     return true;
   }
 
+  // Aquí generamos el QR con el id de la fecha y hora
   generateQRCode() {
-    const data = `Asistencia:${this.selectedSection}:${this.selectedSubject}:${this.nombreUsuario}`;
-    QRCode.toDataURL(data)
-      .then((url) => {
-        this.qrCodeData = url;
+    // Crear un id basado en la fecha y hora actual
+    const dateTime = new Date();
+    const timestamp = dateTime.getTime(); // Obtiene el timestamp de la fecha actual
+
+    const data = {
+      id: timestamp.toString(), // El id único basado en la fecha y hora
+      sessionId: this.selectedSection,
+      subject: this.selectedSubject,
+      profesor: this.nombreUsuario
+    };
+
+    // Generar el código QR localmente
+    QRCode.toDataURL(JSON.stringify(data), (err, url) => {
+      if (err) {
+        console.error('Error generando el código QR', err);
+      } else {
+        this.qrCodeData = url; // Asignamos la URL generada
         console.log(this.qrCodeData);
-      })
-      .catch((err) => {
-        console.error('Error generando el QR', err);
-      });
+      }
+    });
   }
 }

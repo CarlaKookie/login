@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
-import { Storage } from '@ionic/storage-angular';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { AuthService } from '../auth.service';
+import { Storage } from '@ionic/storage-angular';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner'; // Importa BarcodeScanner
+import { UserDataService } from '../user-data.service';
 
 @Component({
   selector: 'app-inicio',
@@ -15,7 +17,9 @@ export class InicioPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private storage: Storage
+    private storage: Storage,
+    private userDataService: UserDataService,
+    private alertController: AlertController  // Inyectamos el AlertController
   ) {}
 
   async ngOnInit() {
@@ -44,31 +48,40 @@ export class InicioPage implements OnInit {
     return true;
   }
 
-  goToNotas() {
-    const navigationExtras: NavigationExtras = {
-      state: { fromEdit: true },
-    };
-    this.router.navigate(['/notas'], navigationExtras);
+  async startScan() {
+    try {
+      // Verifica si se tiene permiso para usar la cámara
+      const allowed = await BarcodeScanner.checkPermission({ force: true });
+      if (allowed.granted) {
+        // Oculta la interfaz de usuario web para que la cámara pueda escanear
+        document.querySelector('body')?.classList.add('scanner-active');
+
+        // Inicia el escaneo
+        const result = await BarcodeScanner.startScan(); // La promesa se resuelve cuando se detecta un código
+        document.querySelector('body')?.classList.remove('scanner-active');
+
+        // Verifica si se obtuvo algún contenido del escaneo
+        if (result.hasContent) {
+          console.log('Scanned content:', result.content); // Muestra el contenido escaneado en la consola
+          // Aquí puedes manejar el contenido escaneado como necesites
+          // Por ejemplo, hacer algo con el contenido
+        }
+      } else {
+        console.error('Permission denied');
+      }
+    } catch (err) {
+      console.error('Error al escanear el código QR:', err);
+      this.presentAlert('Error', 'Error en el escaneo', 'Hubo un problema al escanear el código QR.');
+    }
   }
 
-  async startScan() {
-    // Verifica si se tiene permiso para usar la cámara
-    const allowed = await BarcodeScanner.checkPermission({ force: true });
-    if (allowed.granted) {
-      // Oculta la interfaz de usuario web para que la cámara pueda escanear
-      document.querySelector('body')?.classList.add('scanner-active');
-
-      // Inicia el escaneo
-      const result = await BarcodeScanner.startScan(); // La promesa se resuelve cuando se detecta un código
-      document.querySelector('body')?.classList.remove('scanner-active');
-
-      // Verifica si se obtuvo algún contenido del escaneo
-      if (result.hasContent) {
-        console.log('Scanned content:', result.content); // Muestra el contenido escaneado en la consola
-        // Aquí puedes manejar el contenido escaneado como necesites
-      }
-    } else {
-      console.error('Permission denied');
-    }
+  async presentAlert(header: string, subHeader: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      subHeader,
+      message,
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 }

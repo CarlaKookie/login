@@ -26,13 +26,6 @@ const routes: Routes = [
     path: 'restauracion',
     loadChildren: () => import('./restauracion/restauracion.module').then(m => m.RestauracionPageModule)
   },
-  {
-    path: 'notas',
-    loadChildren: () => import('./notas/notas.module').then(m => m.NotasPageModule),
-    canActivate: [canActivate],
-    canMatch: [CanmatchGuard],
-    canDeactivate: [CanDeactivateGuard]
-  },
   
   {
     path: 'profesor',

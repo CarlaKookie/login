@@ -23,13 +23,17 @@
       </ion-select>
     </ion-item>
 
+    <!-- Botón para generar el código QR -->
     <ion-button expand="full" color="primary" (click)="generateQRCode()">Generar Código QR</ion-button>
 
-    <!-- Mostrar el QR generado -->
+    <!-- Contenedor para mostrar el código QR generado -->
     <div *ngIf="qrCodeData" class="qr-container">
+      <h3>Código QR </h3>
       <img [src]="qrCodeData" alt="Código QR" />
     </div>
 
+    <!-- Botón para cerrar sesión -->
     <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
   </div>
 </ion-content>
+
