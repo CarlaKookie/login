@@ -66,7 +66,7 @@ app.post('/api/mark-attendance', async (req, res) => {
 
   try {
     const database = client.db('login');
-    const attendanceCollection = db.collection('estudiantes');
+    const attendanceCollection = database.collection('estudiantes');
 
     // Formatear la fecha al tipo Date
     const formattedDate = new Date(date);  // Convertir la fecha a un objeto Date
