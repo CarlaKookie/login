@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from '../auth.service';
 import { Storage } from '@ionic/storage-angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // Importar FormBuilder, FormGroup y Validators
 
 @Component({
   selector: 'app-home',
@@ -10,17 +11,21 @@ import { Storage } from '@ionic/storage-angular';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  nombreUsuario: string = '';
-  contrasena: string = '';
+  loginForm: FormGroup; // Añadir FormGroup
   recuerdame: boolean = true;
 
   constructor(
     private router: Router,
     private alertController: AlertController,
     private authService: AuthService,
-    private storage: Storage
+    private storage: Storage,
+    private fb: FormBuilder // Inyectar FormBuilder
   ) {
     this.initStorage();
+    this.loginForm = this.fb.group({
+      nombreUsuario: ['', Validators.required],
+      contrasena: ['', Validators.required],
+    });
   }
 
   changeStatus(value: boolean) {
@@ -33,8 +38,7 @@ export class HomePage {
 
   ionViewWillEnter() {
     // Limpiar los campos de entrada cada vez que se accede a la página
-    this.nombreUsuario = '';
-    this.contrasena = '';
+    this.loginForm.reset();
 
     if (!this.authService.isLoggedIn()) {
       this.storage.remove('nombre'); // Eliminar nombre del storage al cerrar sesión
@@ -43,7 +47,7 @@ export class HomePage {
   }
 
   async navigateToInicio() {
-    if (!this.nombreUsuario || !this.contrasena) {
+    if (this.loginForm.invalid) {
       const alert = await this.alertController.create({
         header: 'Error',
         message: 'Por favor, ingrese su nombre de usuario y/o contraseña.',
@@ -51,7 +55,8 @@ export class HomePage {
       });
       await alert.present();
     } else {
-      const user = this.authService.login(this.nombreUsuario, this.contrasena);
+      const { nombreUsuario, contrasena } = this.loginForm.value;
+      const user = this.authService.login(nombreUsuario, contrasena);
       if (user) {
         // Guardar el nombre de usuario y correo en el storage
         await this.storage.set('nombre', user.nombre);
