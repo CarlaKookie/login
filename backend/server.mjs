@@ -1,19 +1,27 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import { MongoClient } from 'mongodb';
 import cors from 'cors';
 import QRCode from 'qrcode';
-import { Attendance } from './attendance.js'; // Importar el modelo de asistencia
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json()); // Procesa cuerpos JSON
 
-const mongoUri = "mongodb+srv://usuario:carla123@cluster0.2rdws.mongodb.net/registrapp?retryWrites=true&w=majority";
-mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Conexión exitosa a MongoDB'))
+// Configuración de la URI de conexión
+const url = "mongodb+srv://usuario:carla123@cluster0.2rdws.mongodb.net/registrapp?retryWrites=true&w=majority";
+const dbName = "registrapp"; // Nombre de tu base de datos
+const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Conexión al servidor de MongoDB
+let db;
+client.connect()
+  .then(() => {
+    db = client.db(dbName);
+    console.log('Conexión exitosa a MongoDB');
+  })
   .catch(err => {
     console.error('Error conectando a MongoDB', err);
     process.exit(1);
@@ -39,7 +47,10 @@ app.get('/api/get-attendance', async (req, res) => {
     // Log para verificar las fechas calculadas
     console.log('Fecha de inicio:', startDate);
     console.log('Fecha de fin:', endDate);
-    
+
+    // Obtener la colección "attendance"
+    const attendanceCollection = db.collection('attendance');
+
     // Realizar la búsqueda en la base de datos con el rango de fechas
     const query = { 
       date: { $gte: startDate, $lte: endDate },  // Rango de fechas
@@ -48,7 +59,15 @@ app.get('/api/get-attendance', async (req, res) => {
 
     console.log('Consulta realizada:', query);  // Verificar la consulta
 
-    const attendanceRecords = await Attendance.find(query, '-_id user status date section subject sessionId');
+    const attendanceRecords = await attendanceCollection.find(query).project({
+      _id: 0,
+      user: 1,
+      status: 1,
+      date: 1,
+      section: 1,
+      subject: 1,
+      sessionId: 1
+    }).toArray();
 
     // Si no hay registros, devolver un mensaje adecuado
     if (attendanceRecords.length === 0) {
@@ -71,16 +90,20 @@ app.post('/api/mark-attendance', async (req, res) => {
   }
 
   try {
-    const newRecord = new Attendance({
+    // Obtener la colección "attendance"
+    const attendanceCollection = db.collection('attendance');
+
+    // Crear un nuevo documento de asistencia
+    const newRecord = {
       user,
       date: new Date(date),
       section,
       status,
       subject,
       sessionId,
-    });
+    };
 
-    await newRecord.save();
+    await attendanceCollection.insertOne(newRecord);
     res.status(200).send('Asistencia registrada correctamente');
   } catch (err) {
     console.error('Error al registrar asistencia', err);

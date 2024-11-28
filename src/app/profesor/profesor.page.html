@@ -9,43 +9,67 @@
     <h2>Bienvenido, {{ nombreUsuario }}</h2>
     <p>Correo: {{ correoUsuario }}</p>
 
-    <ion-item>
-      <ion-label>Sección</ion-label>
-      <ion-select [(ngModel)]="selectedSection">
-        <ion-select-option *ngFor="let section of sections" [value]="section">{{ section }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Asignatura</ion-label>
-      <ion-select [(ngModel)]="selectedSubject">
-        <ion-select-option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <!-- Fecha como un campo desplegable compacto -->
-    <ion-item>
-      <ion-label position="floating">Fecha</ion-label>
-      <ion-input [(ngModel)]="selectedDate" type="date"></ion-input>
-    </ion-item>
-
-    <ion-button expand="full" color="primary" (click)="generateQRCode()">Generar Código QR</ion-button>
-
-    <div *ngIf="qrCodeData" class="qr-container">
-      <h3>Código QR</h3>
-      <img [src]="qrCodeData" alt="Código QR" />
+    <div>
+      <img 
+        [src]="selectedQRCode || 'assets/Images/Negro.jpg'" 
+        alt="Código QR" 
+        [style.width.px]="selectedQRCode ? 300 : null" 
+        [style.height.px]="selectedQRCode ? 300 : null"
+      />
     </div>
 
-    <ion-button expand="full" color="secondary" (click)="consultAttendance()">Consultar Asistencia</ion-button>
 
+    <div>
+      <ion-card>
+        <h2>Generar QR para Secciones</h2>
+        <ion-list>
+          <ion-item *ngFor="let section of sections">
+            <ion-label>{{ section.subject }}-{{ section.name }}</ion-label>
+            <ion-button (click)="generateQRCode(section)">Generar QR</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
+
+    <!-- Formulario para consultar asistencia -->
+    <ion-item>
+      <ion-label position="floating">Fecha</ion-label>
+      <ion-input [(ngModel)]="date" type="date"></ion-input>
+    </ion-item>
+  
+    <ion-item>
+      <ion-label position="floating">Sección</ion-label>
+      <ion-select [(ngModel)]="section">
+        <ion-select-option *ngFor="let section of sections" [value]="section.name">
+          {{ section.name }} - {{ section.subject }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  
+    <ion-button expand="full" (click)="consultAttendance()">Consultar Asistencia</ion-button>
+  
     <ion-list *ngIf="attendanceRecords.length > 0">
       <ion-item *ngFor="let record of attendanceRecords">
         <ion-label>
-          {{ record.user }} - {{ record.status }} - {{ record.date | date: 'yyyy-MM-dd' }}
+          <h2>Estudiante: {{ record.studentId }}</h2>
+          <p>Fecha: {{ record.date | date: 'yyyy-MM-dd' }}</p>
+          <p>Sección: {{ record.section }}</p>
+          <p>Estado de Asistencia: {{ record.attendanceStatus }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    
+    <!-- Mostrar un mensaje si no hay registros -->
+    <ion-list *ngIf="attendanceRecords.length === 0">
+      <ion-item>
+        <ion-label>
+          <h2>No se encontraron registros de asistencia</h2>
         </ion-label>
       </ion-item>
     </ion-list>
 
     <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
-  </div>
-</ion-content>
+  </div> <!-- Cierre del div background-container -->
+
+</ion-content> <!-- Cierre del ion-content -->
+

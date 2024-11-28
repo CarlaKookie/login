@@ -11,16 +11,25 @@ import { ApiService } from '../services/api.service';
   styleUrls: ['./profesor.page.scss'],
 })
 export class ProfesorPage implements OnInit {
-  qrCodeData: string = '';
+  qrCodes: Array<{ section: string; url: string }> = [];
   selectedSection: string = '';
   selectedSubject: string = '';
   selectedDate: string = ''; // Campo para la fecha seleccionada
   nombreUsuario: string = '';
   correoUsuario: string = '';
+  date: string = '';
+  section: string = '';
   attendanceRecords: any[] = [];
+  selectedQRCode: string | null = null;
+  qrCodeUrl: string = '';
 
-  sections: string[] = ['004D', '006D', '007D'];
-  subjects: string[] = ['Programación de base de datos', 'Programación de aplicaciones móviles'];
+
+  sections = [
+    { id: 'A', name: '006D', subject: 'Programación de aplicaciones móviles' },
+    { id: 'B', name: '007D', subject: 'Programación de aplicaciones móviles' },
+    { id: 'C', name: '004D', subject: 'Programación de base de datos' },
+    { id: 'D', name: '005D', subject: 'Programación de base de datos' },
+  ];
 
   constructor(
     private storage: Storage,
@@ -29,10 +38,6 @@ export class ProfesorPage implements OnInit {
     private apiService: ApiService
   ) {}
 
-  // No es necesario 'ngOnInit' para cargar los datos, lo haremos en 'ionViewWillEnter'
-  ngOnInit() {
-    // En ngOnInit no es necesario hacer nada relacionado con el storage
-  }
 
   // Cambia la carga de datos al ciclo de vida 'ionViewWillEnter'
   async ionViewWillEnter() {
@@ -45,7 +50,7 @@ export class ProfesorPage implements OnInit {
     // Limpiar campos relacionados con la sección y asignatura
     this.selectedSection = '';
     this.selectedSubject = '';
-    this.qrCodeData = ''; // Limpiar el código QR
+    this.qrCodeUrl = ''; // Limpiar el código QR
   }
 
   async logout() {
@@ -68,39 +73,55 @@ export class ProfesorPage implements OnInit {
     return true;
   }
 
-  generateQRCode() {
-    const dateTime = new Date();
-    const timestamp = dateTime.getTime();
-
+  async generateQRCode(section: any) {
     const data = {
-      id: timestamp.toString(),
-      sessionId: this.selectedSection,
-      subject: this.selectedSubject,
-      profesor: this.nombreUsuario
+      section: section.name,
+      subject: section.subject,
+      sessionId: new Date().toISOString(), // Identificador único
     };
 
-    QRCode.toDataURL(JSON.stringify(data), (err, url) => {
-      if (err) {
-        console.error('Error generando el código QR', err);
-      } else {
-        this.qrCodeData = url;
-        console.log(this.qrCodeData);
+    try {
+      const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(data));
+
+      // Solo se añade si no existe un QR con esta sección
+      if (!this.qrCodes.some(qr => qr.section === section.name)) {
+        this.qrCodes.push({ section: section.name, url: qrCodeUrl });
       }
-    });
+
+      this.selectedQRCode = qrCodeUrl; // Actualiza la imagen del QR
+    } catch (err) {
+      console.error('Error al generar el código QR:', err);
+    }
+  }
+
+  generateSessionId(): string {
+    return Math.random().toString(36).substring(2, 15); 
+  }
+
+  async ngOnInit() {
+    await this.storage.create();
+    this.obtenerNombre();
+
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras?.state) {
+      this.nombreUsuario = navigation.extras.state['nombre_usuario'] || 'profesor';
+    } else {
+      this.nombreUsuario = this.nombreUsuario || 'profesor';
+    }
+  }
+
+  async obtenerNombre() {
+    this.nombreUsuario = await this.storage.get('nombre');
+    console.log('Nombre almacenado:', this.nombreUsuario);
   }
 
   consultAttendance() {
-    if (!this.selectedDate || !this.selectedSection) {
+    if (!this.date || !this.section) {
       alert('Debe proporcionar una fecha y sección válidas.');
       return;
     }
-
-    // Convertir la fecha seleccionada a formato ISO con zona horaria
-    const isoDate = new Date(this.selectedDate).toISOString();
-
-    console.log('Consultando asistencia para:', isoDate, this.selectedSection); // Verificación de los datos
-
-    this.apiService.getAttendance(isoDate, this.selectedSection).subscribe(
+  
+    this.apiService.getAttendance(this.date, this.section).subscribe(
       (data) => {
         this.attendanceRecords = data;
         console.log('Asistencia:', data);
@@ -110,5 +131,6 @@ export class ProfesorPage implements OnInit {
         alert('Hubo un error al consultar los datos.');
       }
     );
+  
   }
 }

@@ -6,32 +6,29 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:3001/api'; // Ruta base del backend
+  private baseUrl = 'http://localhost:3000/api'; // Ruta base del backend
 
   constructor(private http: HttpClient) {}
 
-  // Método para obtener la asistencia
+  /**
+   * Obtiene la asistencia de una sección en una fecha específica.
+   * @param date Fecha en formato ISO o string válido.
+   * @param section Sección a consultar.
+   * @returns Observable con los datos de asistencia.
+   */
   getAttendance(date: string, section: string): Observable<any> {
-    // Convertir la fecha al formato 'YYYY-MM-DD' (sin la parte de la hora)
-    const formattedDate = new Date(date).toISOString().split('T')[0]; // Formato de la fecha solo con 'YYYY-MM-DD'
-    const params = new HttpParams()
-      .set('date', formattedDate)  // Añadir la fecha al parámetro
-      .set('section', section);    // Añadir la sección al parámetro
+    const formattedDate = new Date(date).toISOString().split('T')[0]; // Formato de la fecha
+    const params = new HttpParams().set('date', formattedDate).set('section', section);
 
-    return this.http.get(`${this.baseUrl}/get-attendance`, { params }); // Enviar la solicitud GET al backend
+    return this.http.get(`${this.baseUrl}/get-attendance`, { params }); // Endpoint específico
   }
 
-  // Método para marcar la asistencia
+  /**
+   * Marca la asistencia para un usuario.
+   * @param attendanceData Datos de asistencia a enviar.
+   * @returns Observable con la respuesta del backend.
+   */
   markAttendance(attendanceData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/mark-attendance`, attendanceData); // Endpoint para marcar la asistencia
-  }
-
-  // Método para generar el código QR
-  generateQRCode(data: any): Observable<any> {
-    const params = new HttpParams()
-      .set('sessionId', data.sessionId)
-      .set('subject', data.subject);
-
-    return this.http.get(`${this.baseUrl}/generate-qrcode`, { params, responseType: 'text' }); // Generar código QR con parámetros
+    return this.http.post(`${this.baseUrl}/mark-attendance`, attendanceData); // Endpoint ajustado
   }
 }
