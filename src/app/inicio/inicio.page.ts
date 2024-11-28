@@ -59,7 +59,6 @@ export class InicioPage implements OnInit {
 
         // Inicia el escaneo
         const result = await BarcodeScanner.startScan(); // La promesa se resuelve cuando se detecta un código
-        document.querySelector('body')?.classList.remove('scanner-active');
 
         // Verifica si se obtuvo algún contenido del escaneo
         if (result.hasContent) {
@@ -80,11 +79,11 @@ export class InicioPage implements OnInit {
 
           const userData = {
             user: correo,
-            sessionId,
-            subject,
+            date: new Date().toISOString(),
             section,
             status: 'presente',
-            date: new Date().toISOString(),
+            subject,
+            sessionId,  
           };
 
           this.sendData(userData);
@@ -104,7 +103,7 @@ export class InicioPage implements OnInit {
         console.log('Datos enviados correctamente', response);
         await this.presentAlert('Asistencia','', 'confirmada');
       },
-      (error) => {
+      async (error) => {
         console.error('Error al enviar los datos', error);
         // Aquí puedes manejar el error, por ejemplo, mostrar una alerta
       }

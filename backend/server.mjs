@@ -58,6 +58,7 @@ app.get('/api/get-attendance', async (req, res) => {
 
 // **Endpoint para marcar asistencia**
 app.post('/api/mark-attendance', async (req, res) => {
+  console.log('Ruta /api/ mark-attendance llamada')
   const { user, date, section, status, subject, sessionId } = req.body;
 
   if (!user || !date || !section || !status || !subject || !sessionId) {
@@ -66,10 +67,10 @@ app.post('/api/mark-attendance', async (req, res) => {
 
   try {
     const database = client.db('login');
-    const attendanceCollection = database.collection('estudiantes');
+    const Attendance = database.collection('estudiantes');
 
     // Formatear la fecha al tipo Date
-    const formattedDate = new Date(date);  // Convertir la fecha a un objeto Date
+    const formattedDate = new Date(date).toISOString().split('T')[0];  // Convertir la fecha a un objeto Date
 
     // Crear un nuevo documento de asistencia
     const newRecord = {
@@ -81,7 +82,7 @@ app.post('/api/mark-attendance', async (req, res) => {
       sessionId,
     };
 
-    await attendanceCollection.insertOne(newRecord);
+    await Attendance.insertOne(newRecord);
     res.status(200).send('Asistencia registrada correctamente');
   } catch (err) {
     console.error('Error al registrar asistencia', err);
@@ -90,7 +91,7 @@ app.post('/api/mark-attendance', async (req, res) => {
 });
 
 // **Endpoint para generar QR**
-app.get('/generate-qrcode', (req, res) => {
+app.get('/generate-qrcode', async (req, res) => {
   const { sessionId, subject, section } = req.query;
 
   if (!sessionId || !subject || !section) {
