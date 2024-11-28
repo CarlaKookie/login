@@ -74,4 +74,12 @@ body.scanner-active {
   background: transparent !important;
 }
 
+html, body {
+  background: transparent !important;
+  overflow: hidden;
+}
+
+ion-content {
+  --background: transparent !important;
+}
 
