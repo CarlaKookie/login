@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Generador de QR - Profesor</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="background-container">
+    <h2>Bienvenido, {{ nombreUsuario }}</h2>
+    <p>Correo: {{ correoUsuario }}</p>
+
+    <div>
+      <img 
+        [src]="selectedQRCode || 'assets/Images/Negro.jpg'" 
+        alt="Código QR" 
+        [style.width.px]="selectedQRCode ? 300 : null" 
+        [style.height.px]="selectedQRCode ? 300 : null"
+      />
+    </div>
+
+
+    <div>
+      <ion-card>
+        <h2>Generar QR para Secciones</h2>
+        <ion-list>
+          <ion-item *ngFor="let section of sections">
+            <ion-label>{{ section.subject }}-{{ section.name }}</ion-label>
+            <ion-button (click)="generateQRCode(section)">Generar QR</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
+
+    <!-- Formulario para consultar asistencia -->
+    <ion-item>
+      <ion-label position="floating">Fecha</ion-label>
+      <ion-input [(ngModel)]="date" type="date"></ion-input>
+    </ion-item>
+  
+    <ion-item>
+      <ion-label position="floating">Sección</ion-label>
+      <ion-select [(ngModel)]="section">
+        <ion-select-option *ngFor="let section of sections" [value]="section.name">
+          {{ section.name }} - {{ section.subject }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  
+    <ion-button expand="full" (click)="consultAttendance()">Consultar Asistencia</ion-button>
+  
+    <ion-list *ngIf="attendanceRecords.length > 0">
+      <ion-item *ngFor="let record of attendanceRecords">
+        <ion-label>
+          <h2>Estudiante: {{ record.user }}</h2>
+          <p>Fecha: {{ record.date | date: 'yyyy-MM-dd' }}</p>
+          <p>Sección: {{ record.section }}</p>
+          <p>Estado de Asistencia: {{ record.status }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    
+    <!-- Mostrar un mensaje si no hay registros -->
+    <ion-list *ngIf="attendanceRecords.length === 0">
+      <ion-item>
+        <ion-label>
+          <h2>No se encontraron registros de asistencia</h2>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
+  </div> <!-- Cierre del div background-container -->
+
+</ion-content> <!-- Cierre del ion-content -->
+

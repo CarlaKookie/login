@@ -1,0 +1,14 @@
+<ion-content>
+  <div class="background-container">
+    <img src="assets/Images/logo.png" alt="Logo" class="logo">
+    
+    <div class="welcome-message">
+      <p>Bienvenido/a {{ nombreUsuario }}!</p>
+    </div>
+
+    <div class="notas-section">
+      <ion-button class="custom-button" color="primary" expand="block" (click)="startScan()">Marcar Asistencia</ion-button>
+      <ion-button class="custom-button" color="danger" expand="block" (click)="logout()">Cerrar sesión</ion-button>
+    </div>
+  </div>
+</ion-content>

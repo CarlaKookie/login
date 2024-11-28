@@ -1,0 +1,90 @@
+ion-content {
+  --background: linear-gradient(to bottom, #01109c, #4b6cb7); 
+  --color-primary: #ff4f5e;  
+}
+
+.top-section {
+  height: 33vh;
+  background-color: #01109c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; 
+  color: white;
+  font-size: 2.5rem;
+}
+
+.logo {
+  width: 150px;  
+  height: auto;
+  margin-bottom: 20px;  
+  animation: bounce 2s infinite;  
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);  
+  }
+}
+
+ion-card {
+  border-radius: 10px;
+  margin-top: -20vh;
+  padding: 2rem;
+}
+
+ion-card-header {
+  background-color: #4b6cb7;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 10px 10px 0 0;
+}
+
+ion-card-title {
+  font-weight: bold;
+}
+
+ion-item {
+  margin-bottom: 1rem;
+}
+
+ion-label {
+  color: #01109c;
+  font-weight: bold;
+}
+
+ion-input {
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  color: black;
+}
+
+ion-button {
+  color: white;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 0.8rem;
+  margin-top: 1rem;
+}
+
+ion-button.custom-button {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+footer {
+  margin-top: 2rem;
+}
+
+ion-footer {
+  background-color: #01109c;
+  padding: 10px;
+  color: white;
+}
