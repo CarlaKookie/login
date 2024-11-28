@@ -51,10 +51,10 @@
     <ion-list *ngIf="attendanceRecords.length > 0">
       <ion-item *ngFor="let record of attendanceRecords">
         <ion-label>
-          <h2>Estudiante: {{ record.studentId }}</h2>
+          <h2>Estudiante: {{ record.user }}</h2>
           <p>Fecha: {{ record.date | date: 'yyyy-MM-dd' }}</p>
           <p>Sección: {{ record.section }}</p>
-          <p>Estado de Asistencia: {{ record.attendanceStatus }}</p>
+          <p>Estado de Asistencia: {{ record.status }}</p>
         </ion-label>
       </ion-item>
     </ion-list>
