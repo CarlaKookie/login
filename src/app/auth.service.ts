@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AuthService {
-
   private isAuthenticated = false; // Simula si el usuario está autenticado
+  private currentUser: string | null = null; // Almacena el nombre del usuario autenticado
 
   // Almacenar credenciales, tipo de usuario y correo
   private validUsers: { [key: string]: { password: string, tipo: string, correo: string } } = {
@@ -20,6 +20,7 @@ export class AuthService {
     const user = this.validUsers[username];
     if (user && user.password === password) {
       this.isAuthenticated = true;
+      this.currentUser = username; // Guardar el nombre del usuario autenticado
       return { nombre: username, tipo: user.tipo, correo: user.correo }; // Devuelve el usuario con sus detalles
     }
     return null;
@@ -29,7 +30,15 @@ export class AuthService {
     return this.isAuthenticated;
   }
 
+  getUserEmail(): string | null {
+    if (this.currentUser) {
+      return this.validUsers[this.currentUser].correo;
+    }
+    return null;
+  }
+
   logout() {
     this.isAuthenticated = false;
+    this.currentUser = null; // Limpiar el nombre del usuario autenticado
   }
 }

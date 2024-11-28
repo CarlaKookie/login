@@ -33,6 +33,7 @@ export class InicioPage implements OnInit {
     if (this.canDeactivate({ fromLogout: true })) {
       this.authService.logout();
       await this.storage.remove('nombre'); // Eliminar nombre del storage al cerrar sesión
+      await this.storage.remove('correo'); // Eliminar correo del storage al cerrar sesión
       this.router.navigate(['/home']);
     }
   }
@@ -63,8 +64,30 @@ export class InicioPage implements OnInit {
         // Verifica si se obtuvo algún contenido del escaneo
         if (result.hasContent) {
           console.log('Scanned content:', result.content); // Muestra el contenido escaneado en la consola
-          // Aquí puedes manejar el contenido escaneado como necesites
-          // Por ejemplo, hacer algo con el contenido
+          const scannedData = JSON.parse(result.content); // Decodificar JSON del QR
+          const { sessionId, subject, section } = scannedData;
+
+          if (!sessionId || !subject || !section) {
+            this.presentAlert('Error', 'Datos incompletos', 'El QR escaneado no contiene todos los datos necesarios.');
+            return;
+          }
+
+          const correo = this.authService.getUserEmail();
+          if (!correo) {
+            this.presentAlert('Error', 'Correo no encontrado', 'No se ha encontrado el correo electrónico del usuario.');
+            return;
+          }
+
+          const userData = {
+            user: correo,
+            sessionId,
+            subject,
+            section,
+            status: 'presente',
+            date: new Date().toISOString(),
+          };
+
+          this.sendData(userData);
         }
       } else {
         console.error('Permission denied');
@@ -73,6 +96,19 @@ export class InicioPage implements OnInit {
       console.error('Error al escanear el código QR:', err);
       this.presentAlert('Error', 'Error en el escaneo', 'Hubo un problema al escanear el código QR.');
     }
+  }
+
+  sendData(userData: any) {
+    this.userDataService.sendUserData(userData).subscribe(
+      async (response) => {
+        console.log('Datos enviados correctamente', response);
+        await this.presentAlert('Asistencia','', 'confirmada');
+      },
+      (error) => {
+        console.error('Error al enviar los datos', error);
+        // Aquí puedes manejar el error, por ejemplo, mostrar una alerta
+      }
+    );
   }
 
   async presentAlert(header: string, subHeader: string, message: string) {

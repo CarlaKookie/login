@@ -65,7 +65,8 @@ app.post('/api/mark-attendance', async (req, res) => {
   }
 
   try {
-    const attendanceCollection = db.collection('attendance');
+    const database = client.db('login');
+    const attendanceCollection = db.collection('estudiantes');
 
     // Formatear la fecha al tipo Date
     const formattedDate = new Date(date);  // Convertir la fecha a un objeto Date
@@ -90,13 +91,13 @@ app.post('/api/mark-attendance', async (req, res) => {
 
 // **Endpoint para generar QR**
 app.get('/generate-qrcode', (req, res) => {
-  const { sessionId, subject } = req.query;
+  const { sessionId, subject, section } = req.query;
 
-  if (!sessionId || !subject) {
+  if (!sessionId || !subject || !section) {
     return res.status(400).send('Faltan parámetros requeridos: sessionId o subject');
   }
 
-  const data = { sessionId, subject };
+  const data = { sessionId, subject, section };
 
   QRCode.toDataURL(JSON.stringify(data), function (err, url) {
     if (err) {

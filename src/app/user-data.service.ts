@@ -1,18 +1,22 @@
-// user-data.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserDataService {
 
-  private apiUrl = 'http://localhost:3001/api/users';
+  private apiUrl = 'http://localhost:3000/api/mark-attendance';
 
   constructor(private http: HttpClient) {}
+  
+  sendUserData(userData: any) {
+    // Formatear la fecha antes de enviarla
+    if (userData.date) {
+      userData.date = new Date(userData.date).toISOString().split('T')[0];
+    }
 
-  sendUserData(userData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, userData);
+    return this.http.post(this.apiUrl, userData); // Enviar datos al backend
+
   }
 }
