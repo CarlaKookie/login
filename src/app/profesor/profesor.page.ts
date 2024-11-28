@@ -26,9 +26,9 @@ export class ProfesorPage implements OnInit {
 
   sections = [
     { id: 'A', name: '006D', subject: 'Programación de aplicaciones móviles' },
-    { id: 'B', name: '007D', subject: 'Programación de aplicaciones móviles' },
+    { id: 'B', name: '007D', subject: 'Programación de base de datos' },
     { id: 'C', name: '004D', subject: 'Programación de base de datos' },
-    { id: 'D', name: '005D', subject: 'Programación de base de datos' },
+    { id: 'D', name: '002D', subject: 'Programación de aplicaciones móviles' },
   ];
 
   constructor(
